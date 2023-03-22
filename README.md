@@ -2,7 +2,7 @@
 
 manifest-v3 based extension for every browser ever made\* that turns forum thread layout into THIS....:
 
-![a screenshot of the tool](https://i.postimg.cc/FHb9Wvmr/image.png)
+![a screenshot of the tool](https://i.postimg.cc/HWMZsB6f/image.png)
 
 \*aslong as it supports manifest v3
 
