@@ -60,7 +60,7 @@ class Post {
   }
 }
 
-(async function () {
+(function () {
   if (
     window.location.pathname.slice(window.location.pathname.length - 3) ===
     "new"
