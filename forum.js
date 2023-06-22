@@ -1,4 +1,9 @@
 class Post {
+  /**
+   * @param {HTMLTableCellElement} indicator New posts indicator
+   * @param {HTMLTableCellElement} userdate User link + the date it was posted
+   * @param {HTMLTableCellElement} msg Post body
+   */
   constructor(indicator, userdate, msg) {
     /*
       yes i can use queryselector but i dont feel like it
@@ -25,22 +30,37 @@ class Post {
     } else {
       this.title = "";
     }
+
+    this.mood = "Fetching mood...";
   }
-  render() {
+  /**
+   * Gets the current mood text of the user plus its smiley
+   * @param {string} userlink Link to the user's profile
+   */
+  getUserMood(userlink) {
+    return new Promise(async (resolve, reject) => {
+      const r = await fetch(userlink).catch(err => reject);
+      const body = (new DOMParser()).parseFromString(await r.text(), "text/html");
+      const moodHtml = body.querySelector(".profile-data:nth-of-type(2) > .profile-value > a");
+      resolve(moodHtml)
+    })
+  }
+  render(index) {
     const div = document.createElement("div");
+    div.id = "im-post-" + index.toString();
     div.innerHTML = `
       <h4>${this.unread ? '<span style="color:red">+</span> ' : ""}${
       !this.user
         ? "Deleted User"
         : '<a href="' + this.userLink + '">' + this.user + "</a>"
-    } | ${this.date.toDateString()}</h4>
+    } | ${this.mood} | ${this.date.toDateString()}</h4>
       ${this.content.join("")}
     `;
     return div;
   }
 }
 
-(function () {
+(async function () {
   if (
     window.location.pathname.slice(window.location.pathname.length - 3) ===
     "new"
@@ -48,16 +68,22 @@ class Post {
     return;
   const thread = document.querySelectorAll("tbody tr");
   const posts = [];
-  thread.forEach((el) => {
+  thread.forEach((el, idx) => {
     const children = el.childNodes;
     posts.push(new Post(children[1], children[3], children[5]));
+    if (posts[idx].user !== "") {
+      posts[idx].getUserMood(posts[idx].userLink).then(val => {
+        posts[idx].mood = val.innerHTML;
+        document.getElementById("im-post-" + idx.toString()).outerHTML = posts[idx].render(idx).outerHTML;
+      })
+    }
   });
   // change page content now
   document.querySelector(".content > h1").innerHTML +=
     " &raquo; " + posts[0].title;
   const div = document.createElement("div");
-  posts.forEach((post) => {
-    div.appendChild(post.render());
+  posts.forEach((post, index) => {
+    div.appendChild(post.render(index));
   });
   document.querySelector(".content > table").outerHTML = div.outerHTML;
 })();
