@@ -2,7 +2,7 @@
 
 manifest-v3 based extension for every browser ever made\* that turns forum thread layout into THIS....:
 
-![a screenshot of the tool](https://i.postimg.cc/HWMZsB6f/image.png)
+![a screenshot of the tool](./screenshot.png)
 
 \*aslong as it supports manifest v3
 
@@ -10,13 +10,13 @@ manifest-v3 based extension for every browser ever made\* that turns forum threa
 
 also his alt-website where he puts code stuff is [here](https://thekifake.github.io) he might like put documentation for the extension soon maybe idk
 
-## licence
+## license
 
-this is licenced under the cc0 liecnce which maeans you can do whateve you want with it lulz
+this is licensed under the cc0 liecnce which maeans you can do whateve you want with it lulz
 
 ## instructions for adding to your browser
 
-when the time comes for me to get $5 and put this thing on the chrome web store and the firefox addon place thing you can just go there and be joyful but not right now
+at this moment its manual but eventually it will be ported to the chrome web store and firefox add-ons marketplace
 
 ### chromium
 
