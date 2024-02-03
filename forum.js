@@ -1,4 +1,4 @@
-const PLACEHOLDER = 'https://theki.club/imood.png';
+const PLACEHOLDER = "https://theki.club/imood.png";
 
 /** @type {Object<string, UserInfo>} */
 const cachedUserInfo = {};
@@ -59,15 +59,18 @@ class Post {
         reject(err);
         return;
       }
-      const body = (new DOMParser()).parseFromString(await r.text(), "text/html");
-      const mood = body.querySelector(".profile-data:nth-of-type(2) > .profile-value > a");
+      const body = new DOMParser().parseFromString(await r.text(), "text/html");
+      const mood = body.querySelector(
+        ".profile-data:nth-of-type(2) > .profile-value > a"
+      );
       if (mood) this.uinfo.mood = mood.innerHTML;
       const icon = body.querySelector(".profile-image > img");
-      if (icon && icon.getAttribute("src")) this.uinfo.icon = icon.getAttribute("src");
+      if (icon && icon.getAttribute("src"))
+        this.uinfo.icon = icon.getAttribute("src");
       else this.uinfo.icon = PLACEHOLDER;
       cachedUserInfo[this.uinfo.user] = this.uinfo;
       resolve(this.uinfo);
-    })
+    });
   }
   render(index) {
     const div = document.createElement("div");
@@ -82,16 +85,20 @@ class Post {
       >
     </div>
     <div class="im-post-content">
-      <h4>&numero;${index} ${this.unread ? '<span style="color:red">+</span> ' : ""}${
+      <h4>&numero;${index} ${
+      this.unread ? '<span style="color:red">+</span> ' : ""
+    }${
       !this.uinfo.ulink
         ? this.uinfo.user
         : '<a href="' + this.uinfo.ulink + '">' + this.uinfo.user + "</a>"
-    } | <span class="im-post-mood">${this.uinfo.mood}</span> | ${this.date.toDateString()}</h4>
+    } | <span class="im-post-mood">${
+      this.uinfo.mood
+    }</span> | ${this.date.toDateString()}</h4>
       ${this.content.join("")}
     </div>
     `;
 
-    const img = div.querySelector(`#im-post-icon-${index}`)
+    const img = div.querySelector(`#im-post-icon-${index}`);
     img.onerror = () => {
       img.onerror = null;
       img.src = PLACEHOLDER;
@@ -138,9 +145,13 @@ class UserInfo {
   // now get their moods
   let idx = 0;
   for (let post of posts) {
-    if (post.user === "") {idx++;continue;};
+    if (post.user === "") {
+      idx++;
+      continue;
+    }
     await post.getServerUserInfo(post.userLink);
-    document.getElementById("im-post-" + idx).outerHTML = post.render(idx).outerHTML;
+    document.getElementById("im-post-" + idx).outerHTML =
+      post.render(idx).outerHTML;
     idx++;
   }
   console.log(cachedUserInfo);
