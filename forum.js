@@ -72,7 +72,11 @@ class Post {
     div.id = "im-post-" + index.toString();
     div.innerHTML = `
     <div class="im-post-icon">
-      <img alt="Profile picture for ${this.uinfo.user}" src="${this.uinfo.icon}">
+      <img
+        alt="Profile picture for ${this.uinfo.user}"
+        src="${this.uinfo.icon}"
+        onerror="this.onerror=null;this.src='https://theki.club/imood.png'"
+      >
     </div>
     <div class="im-post-content">
       <h4>&numero;${index} ${this.unread ? '<span style="color:red">+</span> ' : ""}${
