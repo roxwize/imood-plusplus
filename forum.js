@@ -1,3 +1,6 @@
+const PLACEHOLDER = 'https://theki.club/imood.png';
+
+/** @type {Object<string, UserInfo>} */
 const cachedUserInfo = {};
 
 class Post {
@@ -61,7 +64,7 @@ class Post {
       if (mood) this.uinfo.mood = mood.innerHTML;
       const icon = body.querySelector(".profile-image > img");
       if (icon && icon.getAttribute("src")) this.uinfo.icon = icon.getAttribute("src");
-      else this.uinfo.icon = "https://theki.club/imood.png";
+      else this.uinfo.icon = PLACEHOLDER;
       cachedUserInfo[this.uinfo.user] = this.uinfo;
       resolve(this.uinfo);
     })
@@ -75,7 +78,7 @@ class Post {
       <img
         alt="Profile picture for ${this.uinfo.user}"
         src="${this.uinfo.icon}"
-        onerror="this.onerror=null;this.src='https://theki.club/imood.png'"
+        id="im-post-icon-${index}"
       >
     </div>
     <div class="im-post-content">
@@ -87,6 +90,14 @@ class Post {
       ${this.content.join("")}
     </div>
     `;
+
+    const img = div.querySelector(`#im-post-icon-${index}`)
+    img.onerror = () => {
+      img.onerror = null;
+      img.src = PLACEHOLDER;
+      this.uinfo.icon = img.src;
+    };
+
     return div;
   }
 }
