@@ -14,9 +14,11 @@ if you want to use it, find [the latest release](https://github.com/roxwize/imoo
 ## screenshots
 
 ![new forum layout](screenshots/forum.png)
+
 revamped forum layout... whoa...
 
 ![cool pie chart](screenshots/moodchart.png)
+
 look at those colors ...
 
 ## installing from source
