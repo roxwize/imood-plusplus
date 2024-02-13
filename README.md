@@ -1,33 +1,27 @@
-# imood subjectively better forum
+<div style="text-align:center;"><img src="src/icons/icon128.png"></div>
 
-manifest-v3 based extension for every browser ever made\* that turns forum thread layout into THIS....:
+# imood++
 
-![a screenshot of the tool](./screenshot.png)
+imood++ is a web extension created by [hoylecake on imood](https://www.imood.com/users/hoylecake) that improves parts of the frontend
 
-\*aslong as it supports manifest v3
+if you want to use it, find [the latest release](https://github.com/roxwize/imood-plusplus/releases) and download it as a zip&mdash; load it into your browser's extensions manager from there. pre-packaged versions on the chrome webstore and firefox addons will come ASAP
 
-**THE CREATOR'S IMOOD IS [HERE](https://www.imood.com/users/hoylecake) CHECK IT OUT**
+## features
 
-also his alt-website where he puts code stuff is [here](https://thekifake.github.io) he might like put documentation for the extension soon maybe idk
+- turn the table-based forum layout into a simpler, purely vertical one (see below for screenshots)
+- add a piechart to the internet mood and personal mood pages to view mood frequencies
 
-## license
+## screenshots
 
-this is licensed under the cc0 liecnce which maeans you can do whateve you want with it lulz
+![new forum layout](screenshot_forum.png)
 
-## instructions for adding to your browser
+## installing from source
 
-at this moment its manual but eventually it will be ported to the chrome web store and firefox add-ons marketplace
+clone the repository first, then download the modules using your package manager of choice. then run the `build` script, or `dev` to have it rebuilt as you make changes
 
-### chromium
-
-chromium based browsers include chrome and vivaldi. i use vivaldi but the process should be extremely similar to chrome
-
-1. download the repository as a zip file to your computer
-2. unzip the zip file and store it somewhere
-3. go to your browser's extension page ([chrome://extensions](chrome://extensions) if on chrome, [vivaldi://extensions](vivaldi://extensions) if on vivaldi)
-4. click **Load unpacked** and select the folder containing the repository you just unzipped
-5. it is finished
-
-### firefox
-
-idk #lolz B)
+```bash
+git clone https://github.com/roxwize/imood-plusplus.git
+cd imood-plusplus
+pnpm install
+pnpm dev
+```

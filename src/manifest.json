@@ -1,0 +1,24 @@
+{
+  "name": "imood++",
+  "manifest_version": 3,
+
+  "content_scripts": [
+    {
+      "matches": ["*://www.imood.com/forums/*/threads/*"],
+      "js": ["forum.js"],
+      "css": ["im-style.css"]
+    },
+    {
+      "matches": ["*://www.imood.com/history", "*://www.imood.com/imood"],
+      "js": ["moodchart.js"],
+      "css": ["im-style.css"]
+    }
+  ],
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png",
+    "256": "icons/icon256.png"
+  }
+}

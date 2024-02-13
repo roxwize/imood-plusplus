@@ -30,3 +30,14 @@
 #im-posts-container {
   margin: 0 -10px;
 }
+
+#mood-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+#mood-chart > div {
+  width: 40%;
+}
