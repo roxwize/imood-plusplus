@@ -2,7 +2,7 @@
 
 # imood++
 
-[chrome](https://chromewebstore.google.com/detail/imood++/oooolmgjjlfahaenjbdplplfljkabkmk) | firefox
+### [chrome](https://chromewebstore.google.com/detail/imood++/oooolmgjjlfahaenjbdplplfljkabkmk) | firefox
 
 imood++ is a web extension created by [hoylecake on imood](https://www.imood.com/users/hoylecake) that improves parts of the frontend
 

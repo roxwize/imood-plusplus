@@ -164,5 +164,4 @@ class UserInfo {
       post.render(idx).outerHTML;
     idx++;
   }
-  console.log(cachedUserInfo);
 })();
