@@ -18,18 +18,21 @@ class Post {
 
     if (userdate.childNodes[1].nodeName === "A") {
       this.uinfo.user = userdate.childNodes[1].textContent;
-      this.uinfo.ulink = userdate.childNodes[1].href;
+      this.uinfo.ulink = new URL(userdate.childNodes[1].href);
+      this.uinfo.id = this.uinfo.ulink.pathname.substring(7);
       this.date = new Date(Date.parse(userdate.childNodes[3].textContent));
     } else {
       this.uinfo.user = "";
       this.date = new Date(Date.parse(userdate.childNodes[2].textContent));
     }
 
+    // add paragraphs
     this.content = [];
     msg.querySelectorAll("p").forEach((p) => {
       this.content.push(p.outerHTML);
     });
 
+    // if the top post then set title
     if (msg.childNodes[1].nodeName === "H2") {
       this.title = msg.childNodes[1].textContent;
     } else {
@@ -44,9 +47,10 @@ class Post {
   getServerUserInfo() {
     return new Promise(async (resolve, reject) => {
       if (!this.uinfo.user) {
-        resolve("Ermmmm");
+        resolve(`Requested user "${this.uinfo.user}" does not exist`);
         return;
       }
+      // if we're cached already then just set our data to what's in the cache and dip out
       if (cachedUserInfo[this.uinfo.user]) {
         resolve(cachedUserInfo[this.uinfo.user]);
         this.uinfo = cachedUserInfo[this.uinfo.user];
@@ -74,7 +78,7 @@ class Post {
   }
   render(index) {
     const div = document.createElement("div");
-    div.classList.add("im-post");
+    div.classList.add("im-post", `im-post-u-${this.uinfo.id}`);
     div.id = "im-post-" + index.toString();
     div.innerHTML = `
     <div class="im-post-icon">
@@ -103,6 +107,10 @@ class Post {
       img.onerror = null;
       img.src = PLACEHOLDER;
       this.uinfo.icon = img.src;
+      // replace all pre-existing posts by the user with the placeholder
+      document.querySelectorAll(`.im-post-u-${this.uinfo.id}`).forEach((e) => {
+        e.querySelector("img").src = PLACEHOLDER;
+      });
     };
 
     return div;
@@ -112,7 +120,9 @@ class Post {
 class UserInfo {
   constructor() {
     this.user = "Deleted User";
-    this.ulink = "";
+    this.id = "";
+    /** @type {URL?} */
+    this.ulink = null;
     this.mood = "Unknown mood";
     this.icon = "";
   }
