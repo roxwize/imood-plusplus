@@ -20,5 +20,11 @@
     "48": "icons/icon48.png",
     "128": "icons/icon128.png",
     "256": "icons/icon256.png"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "imood-plusplus@roxwize.xyz"
+    }
   }
 }
