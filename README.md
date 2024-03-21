@@ -4,7 +4,7 @@
 
 reviewers see [here](#imood-reviewer-notes)
 
-### [chrome](https://chromewebstore.google.com/detail/imood++/oooolmgjjlfahaenjbdplplfljkabkmk) | firefox
+### [chrome](https://chromewebstore.google.com/detail/imood++/oooolmgjjlfahaenjbdplplfljkabkmk) | [firefox](https://addons.mozilla.org/en-US/firefox/addon/imood-plusplus/)
 
 imood++ is a web extension created by [hoylecake on imood](https://www.imood.com/users/hoylecake) that improves parts of the frontend
 
