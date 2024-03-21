@@ -15,6 +15,7 @@ class Post {
      */
     this.uinfo = new UserInfo();
     this.unread = !(indicator.childNodes[0].alt === "no new posts");
+    this.formatted = false;
 
     if (userdate.childNodes[1].nodeName === "A") {
       this.uinfo.user = userdate.childNodes[1].textContent;
@@ -29,7 +30,7 @@ class Post {
     // add paragraphs
     this.content = [];
     msg.querySelectorAll("p").forEach((p) => {
-      this.content.push(p.outerHTML);
+      this.content.push(`<p>${p.innerHTML}</p>`);
     });
 
     // if the top post then set title
@@ -80,6 +81,10 @@ class Post {
     const div = document.createElement("div");
     div.classList.add("im-post", `im-post-u-${this.uinfo.id}`);
     div.id = "im-post-" + index.toString();
+    if (!this.formatted) {
+      this.content = format(this.content.join(""));
+      this.formatted = true;
+    }
     div.innerHTML = `
     <div class="im-post-icon">
       <img
@@ -98,7 +103,7 @@ class Post {
     } | <span class="im-post-mood">${
       this.uinfo.mood
     }</span> | ${this.date.toDateString()}</h4>
-      ${this.content.join("")}
+      ${this.content}
     </div>
     `;
 
@@ -126,6 +131,39 @@ class UserInfo {
     this.mood = "Unknown mood";
     this.icon = "";
   }
+}
+
+/**
+ * pretty much just markdown
+ * @param {string} content
+ */
+function format(content) {
+  console.log(content);
+  let match;
+  // headers
+  const m_h = /^(?:<.+>)?(#{1,6}) (.+)$/gm;
+  match = m_h.exec(content);
+  while (match !== null) {
+    const headerNum = match[1].length;
+    content =
+      content.substring(0, match.index) +
+      `<h${headerNum}>${match[2]}</h${headerNum}>` +
+      content.substring(match.index + match[0].length);
+    match = m_h.exec(content);
+  }
+  // bold
+  content = content.replace(/\*\*([^\n]+)\*\*/g, "<b>$1</b>");
+  // italics
+  content = content.replace(/\*((?!\\)[^\n]+)(?<!\\)\*/g, "<i>$1</i>");
+  // code
+  // content = content.replace(/```\n<br>([^`]*)<br>```/gs, "<pre>$1</pre>");
+  content = content.replace(
+    /`((?!\\)[^\n]+)(?<!\\)`/g,
+    '<pre style="display:inline;">$1</pre>'
+  );
+  // escaped characters
+  content = content.replace(/\\(.)/g, "$1");
+  return content;
 }
 
 (async function () {
