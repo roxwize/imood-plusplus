@@ -138,9 +138,6 @@ class UserInfo {
  * @param {string} content
  */
 function format(content) {
-  const now = Date.now();
-
-  console.log(content);
   let match;
   // headers
   const m_h = /^(?:<.+>)?(#{1,6}) (.+)$/gm;
@@ -168,7 +165,6 @@ function format(content) {
   const m_l = /(!?)\[([^\[]+)\]\(([^\(]+)\)/g;
   match = m_l.exec(content);
   while (match !== null) {
-    console.log(match);
     if (match[1] === "!") {
       content =
         content.substring(0, match.index) +
@@ -184,8 +180,6 @@ function format(content) {
   }
   // escaped characters
   content = content.replace(/\\(.)/g, "$1");
-
-  console.log(`done in ${Date.now() - now}ms`);
   return content;
 }
 
