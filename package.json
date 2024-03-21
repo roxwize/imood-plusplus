@@ -1,7 +1,7 @@
 {
   "name": "imood-plusplus",
   "description": "improves the imood frontend in different ways",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -cw"

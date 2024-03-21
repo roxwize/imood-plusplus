@@ -14,6 +14,7 @@ if you want to use it locally, find [the latest release](https://github.com/roxw
 
 - turn the table-based forum layout into a simpler, purely vertical one (see below for screenshots)
 - add a piechart to the internet mood and personal mood pages to view mood frequencies
+- minimal markdown support for forum posts
 
 ## screenshots
 
