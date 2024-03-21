@@ -138,6 +138,8 @@ class UserInfo {
  * @param {string} content
  */
 function format(content) {
+  const now = Date.now();
+
   console.log(content);
   let match;
   // headers
@@ -154,15 +156,36 @@ function format(content) {
   // bold
   content = content.replace(/\*\*([^\n]+)\*\*/g, "<b>$1</b>");
   // italics
-  content = content.replace(/\*((?!\\)[^\n]+)(?<!\\)\*/g, "<i>$1</i>");
+  content = content.replace(/\*(.*?)((?<!\\)|(?<=\\\\))\*/g, "<i>$1</i>");
   // code
-  // content = content.replace(/```\n<br>([^`]*)<br>```/gs, "<pre>$1</pre>");
+  // content = content.replace(/```\n<br>([^`]*)<br>```/gs, "<pre>$1</pre>"); // TODO: god almighty
   content = content.replace(
     /`((?!\\)[^\n]+)(?<!\\)`/g,
     '<pre style="display:inline;">$1</pre>'
   );
+  // links (TODO: no escaped characters support right now for obvious reasons)
+  content = content.replaceAll(/<a[^>]*>([^>]*)<\/a>/g, "$1"); // strip auto generated links
+  const m_l = /(!?)\[([^\[]+)\]\(([^\(]+)\)/g;
+  match = m_l.exec(content);
+  while (match !== null) {
+    console.log(match);
+    if (match[1] === "!") {
+      content =
+        content.substring(0, match.index) +
+        `<img src="${match[3]}" alt="${match[2]}" style="max-width:50vw;">` +
+        content.substring(match.index + match[0].length);
+    } else {
+      content =
+        content.substring(0, match.index) +
+        `<a rel="nofollow" target="_blank" href="${match[3]}">${match[2]}</a>` +
+        content.substring(match.index + match[0].length);
+    }
+    match = m_l.exec(content);
+  }
   // escaped characters
   content = content.replace(/\\(.)/g, "$1");
+
+  console.log(`done in ${Date.now() - now}ms`);
   return content;
 }
 
