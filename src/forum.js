@@ -80,6 +80,7 @@ class Post {
   render(index) {
     const div = document.createElement("div");
     div.classList.add("im-post", `im-post-u-${this.uinfo.id}`);
+    if (this.unread) div.classList.add("im-post-unread");
     div.id = "im-post-" + index.toString();
     if (!this.formatted) {
       this.content = format(this.content.join(""));
@@ -95,8 +96,6 @@ class Post {
     </div>
     <div class="im-post-content">
       <h4>&numero;${index} ${
-      this.unread ? '<span style="color:red">+</span> ' : ""
-    }${
       !this.uinfo.ulink
         ? this.uinfo.user
         : '<a href="' + this.uinfo.ulink + '">' + this.uinfo.user + "</a>"
@@ -247,4 +246,9 @@ function format(content) {
   document
     .querySelector(".content")
     .insertBefore(info, document.querySelector("p.disclaimer"));
+
+  // scroll to the newest post
+  const latest = document.querySelector(".im-post-unread");
+  console.log(latest);
+  if (latest) window.scrollTo(latest);
 })();

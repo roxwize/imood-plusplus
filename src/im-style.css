@@ -51,6 +51,12 @@
 .im-post:nth-child(odd) {
   background: rgba(0, 0, 0, 0.1);
 }
+.im-post-unread {
+  background: rgba(230, 21, 24, 0.4);
+}
+.im-post-unread:nth-child(odd) {
+  background: rgba(230, 21, 24, 0.3);
+}
 
 #im-posts-container {
   margin: 0 -10px;
