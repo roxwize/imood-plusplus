@@ -1,3 +1,7 @@
+body.imood {
+  overflow: auto;
+}
+
 .im-post {
   display: flex;
   flex-direction: row-reverse;

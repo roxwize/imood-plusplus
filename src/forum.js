@@ -249,6 +249,9 @@ function format(content) {
 
   // scroll to the newest post
   const latest = document.querySelector(".im-post-unread");
-  console.log(latest);
-  if (latest) window.scrollTo(latest);
+  if (latest)
+    latest.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
 })();
