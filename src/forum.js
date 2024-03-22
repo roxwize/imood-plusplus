@@ -146,7 +146,7 @@ function format(content) {
     const headerNum = match[1].length;
     content =
       content.substring(0, match.index) +
-      `<h${headerNum}>${match[2]}</h${headerNum}>` +
+      `<h${headerNum} class="im-post-header">${match[2]}</h${headerNum}>` +
       content.substring(match.index + match[0].length);
     match = m_h.exec(content);
   }
@@ -168,12 +168,12 @@ function format(content) {
     if (match[1] === "!") {
       content =
         content.substring(0, match.index) +
-        `<img src="${match[3]}" alt="${match[2]}" style="max-width:50vw;">` +
+        `<img src="${match[3]}" alt="${match[2]}" class="im-post-image">` +
         content.substring(match.index + match[0].length);
     } else {
       content =
         content.substring(0, match.index) +
-        `<a rel="nofollow" target="_blank" href="${match[3]}">${match[2]}</a>` +
+        `<a rel="nofollow" target="_blank" href="${match[3]}" class="im-post-image">${match[2]}</a>` +
         content.substring(match.index + match[0].length);
     }
     match = m_l.exec(content);
@@ -219,4 +219,32 @@ function format(content) {
       post.render(idx).outerHTML;
     idx++;
   }
+
+  // add info to the bottom of the page
+  const info = document.createElement("p");
+  info.className = "im-forum-response-appendix";
+  info.innerHTML = `<strong>Markdown syntax</strong><br>
+<table class="im-fra-markdown"><tbody>
+  <tr>
+    <td># header 1<br>## header 2<br>...<br>###### header 6</td><td><h1 class="im-post-header">header 1</h1><h2 class="im-post-header">header 2</h2><br>...<br><h6 class="im-post-header">header 6</h6></td>
+  </tr>
+  <tr>
+    <td>*italics*</td><td><i>italics</i></td>
+  </tr>
+  <tr>
+    <td>**bold**</td><td><b>bold</b></td>
+  </tr>
+  <tr>
+    <td>\`code\`</td><td><pre style="display:inline;">code</pre></td>
+  </tr>
+  <tr>
+    <td>[link](https://www.imood.com/)</td><td><a rel="nofollow" target="_blank" href="https://www.imood.com/" class="im-post-link">link</a></td>
+  </tr>
+  <tr>
+    <td>![image](https://images.imood.com/faces/upsidedown.gif)</td><td><img src="https://images.imood.com/faces/upsidedown.gif" alt="image" class="im-post-image"></td>
+  </tr>
+</tbody></table>`;
+  document
+    .querySelector(".content")
+    .insertBefore(info, document.querySelector("p.disclaimer"));
 })();

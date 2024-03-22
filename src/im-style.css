@@ -22,6 +22,31 @@
 .im-post-content > p {
   margin-bottom: 0;
 }
+.im-post-header {
+  margin: 0;
+}
+.im-post-link::after {
+  display: none;
+  visibility: hidden;
+  opacity: 0.7;
+  margin-left: 6px;
+  font-size: small;
+  font-style: italic;
+  content: attr(href);
+}
+.im-post-link:hover::after {
+  visibility: visible;
+  display: inline;
+}
+.im-post-image {
+  max-width: 50vw;
+  max-height: 25vh;
+}
+.im-post-image:hover {
+  max-width: 70vw;
+  max-height: 70vw;
+  cursor: pointer;
+}
 
 .im-post:nth-child(odd) {
   background: rgba(0, 0, 0, 0.1);
@@ -29,6 +54,26 @@
 
 #im-posts-container {
   margin: 0 -10px;
+}
+
+.im-fra-markdown {
+  border-collapse: collapse;
+}
+.im-fra-markdown td {
+  border: 1px solid black;
+}
+.im-fra-markdown td:first-child {
+  font-family: monospace;
+  border-left: 0;
+}
+.im-fra-markdown td:last-child {
+  border-right: 0;
+}
+.im-fra-markdown tr:first-child td {
+  border-top: 0;
+}
+.im-fra-markdown tr:last-child td {
+  border-bottom: 0;
 }
 
 #mood-chart {
