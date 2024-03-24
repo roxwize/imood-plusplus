@@ -4,89 +4,96 @@ const PLACEHOLDER = "https://theki.club/imood.png";
 const cachedUserInfo = {};
 
 class Post {
-  /**
-   * @param {HTMLTableCellElement} indicator New posts indicator
-   * @param {HTMLTableCellElement} userdate User link + the date it was posted
-   * @param {HTMLTableCellElement} msg Post body
-   */
-  constructor(indicator, userdate, msg) {
     /**
-     * @type {UserInfo}
+     * @param {HTMLTableCellElement} indicator New posts indicator
+     * @param {HTMLTableCellElement} userdate User link + the date it was posted
+     * @param {HTMLTableCellElement} msg Post body
      */
-    this.uinfo = new UserInfo();
-    this.unread = !(indicator.childNodes[0].alt === "no new posts");
-    this.formatted = false;
+    constructor(indicator, userdate, msg) {
+        /**
+         * @type {UserInfo}
+         */
+        this.uinfo = new UserInfo();
+        this.unread = !(indicator.childNodes[0].alt === "no new posts");
+        this.formatted = false;
 
-    if (userdate.childNodes[1].nodeName === "A") {
-      this.uinfo.user = userdate.childNodes[1].textContent;
-      this.uinfo.ulink = new URL(userdate.childNodes[1].href);
-      this.uinfo.id = this.uinfo.ulink.pathname.substring(7);
-      this.date = new Date(Date.parse(userdate.childNodes[3].textContent));
-    } else {
-      this.uinfo.user = "";
-      this.date = new Date(Date.parse(userdate.childNodes[2].textContent));
-    }
+        if (userdate.childNodes[1].nodeName === "A") {
+            this.uinfo.user = userdate.childNodes[1].textContent;
+            this.uinfo.ulink = new URL(userdate.childNodes[1].href);
+            this.uinfo.id = this.uinfo.ulink.pathname.substring(7);
+            this.date = new Date(
+                Date.parse(userdate.childNodes[3].textContent)
+            );
+        } else {
+            this.uinfo.user = "";
+            this.date = new Date(
+                Date.parse(userdate.childNodes[2].textContent)
+            );
+        }
 
-    // add paragraphs
-    this.content = [];
-    msg.querySelectorAll("p").forEach((p) => {
-      this.content.push(`<p>${p.innerHTML}</p>`);
-    });
+        // add paragraphs
+        this.content = [];
+        msg.querySelectorAll("p").forEach((p) => {
+            this.content.push(`<p>${p.innerHTML}</p>`);
+        });
 
-    // if the top post then set title
-    if (msg.childNodes[1].nodeName === "H2") {
-      this.title = msg.childNodes[1].textContent;
-    } else {
-      this.title = "";
+        // if the top post then set title
+        if (msg.childNodes[1].nodeName === "H2") {
+            this.title = msg.childNodes[1].textContent;
+        } else {
+            this.title = "";
+        }
     }
-  }
-  /**
-   * Gets UserInfo parameters not immediately available on the thread page
-   * @param {string} userlink Link to the user's profile
-   * @returns {UserInfo}
-   */
-  getServerUserInfo() {
-    return new Promise(async (resolve, reject) => {
-      if (!this.uinfo.user) {
-        resolve(`Requested user "${this.uinfo.user}" does not exist`);
-        return;
-      }
-      // if we're cached already then just set our data to what's in the cache and dip out
-      if (cachedUserInfo[this.uinfo.user]) {
-        resolve(cachedUserInfo[this.uinfo.user]);
-        this.uinfo = cachedUserInfo[this.uinfo.user];
-        return;
-      }
-      let r;
-      try {
-        r = await fetch(this.uinfo.ulink);
-      } catch (err) {
-        reject(err);
-        return;
-      }
-      const body = new DOMParser().parseFromString(await r.text(), "text/html");
-      const mood = body.querySelector(
-        ".profile-data:nth-of-type(2) > .profile-value > a"
-      );
-      if (mood) this.uinfo.mood = mood.innerHTML;
-      const icon = body.querySelector(".profile-image > img");
-      if (icon && icon.getAttribute("src"))
-        this.uinfo.icon = icon.getAttribute("src");
-      else this.uinfo.icon = PLACEHOLDER;
-      cachedUserInfo[this.uinfo.user] = this.uinfo;
-      resolve(this.uinfo);
-    });
-  }
-  render(index) {
-    const div = document.createElement("div");
-    div.classList.add("im-post", `im-post-u-${this.uinfo.id}`);
-    if (this.unread) div.classList.add("im-post-unread");
-    div.id = "im-post-" + index.toString();
-    if (!this.formatted) {
-      this.content = format(this.content.join(""));
-      this.formatted = true;
+    /**
+     * Gets UserInfo parameters not immediately available on the thread page
+     * @param {string} userlink Link to the user's profile
+     * @returns {UserInfo}
+     */
+    getServerUserInfo() {
+        return new Promise(async (resolve, reject) => {
+            if (!this.uinfo.user) {
+                resolve(`Requested user "${this.uinfo.user}" does not exist`);
+                return;
+            }
+            // if we're cached already then just set our data to what's in the cache and dip out
+            if (cachedUserInfo[this.uinfo.user]) {
+                resolve(cachedUserInfo[this.uinfo.user]);
+                this.uinfo = cachedUserInfo[this.uinfo.user];
+                return;
+            }
+            let r;
+            try {
+                r = await fetch(this.uinfo.ulink);
+            } catch (err) {
+                reject(err);
+                return;
+            }
+            const body = new DOMParser().parseFromString(
+                await r.text(),
+                "text/html"
+            );
+            const mood = body.querySelector(
+                ".profile-data:nth-of-type(2) > .profile-value > a"
+            );
+            if (mood) this.uinfo.mood = mood.innerHTML;
+            const icon = body.querySelector(".profile-image > img");
+            if (icon && icon.getAttribute("src"))
+                this.uinfo.icon = icon.getAttribute("src");
+            else this.uinfo.icon = PLACEHOLDER;
+            cachedUserInfo[this.uinfo.user] = this.uinfo;
+            resolve(this.uinfo);
+        });
     }
-    div.innerHTML = `
+    render(index) {
+        const div = document.createElement("div");
+        div.classList.add("im-post", `im-post-u-${this.uinfo.id}`);
+        if (this.unread) div.classList.add("im-post-unread");
+        div.id = "im-post-" + index.toString();
+        if (!this.formatted) {
+            this.content = format(this.content.join(""));
+            this.formatted = true;
+        }
+        div.innerHTML = `
     <div class="im-post-icon">
       <img
         alt="Profile picture for ${this.uinfo.user}"
@@ -96,40 +103,46 @@ class Post {
     </div>
     <div class="im-post-content">
       <h4>&numero;${index} ${
-      !this.uinfo.ulink
-        ? this.uinfo.user
-        : '<a href="' + this.uinfo.ulink + '">' + this.uinfo.user + "</a>"
-    } | <span class="im-post-mood">${
-      this.uinfo.mood
-    }</span> | ${this.date.toDateString()}</h4>
+            !this.uinfo.ulink
+                ? this.uinfo.user
+                : '<a href="' +
+                  this.uinfo.ulink +
+                  '">' +
+                  this.uinfo.user +
+                  "</a>"
+        } | <span class="im-post-mood">${
+            this.uinfo.mood
+        }</span> | ${this.date.toDateString()}</h4>
       ${this.content}
     </div>
     `;
 
-    const img = div.querySelector(`#im-post-icon-${index}`);
-    img.onerror = () => {
-      img.onerror = null;
-      img.src = PLACEHOLDER;
-      this.uinfo.icon = img.src;
-      // replace all pre-existing posts by the user with the placeholder
-      document.querySelectorAll(`.im-post-u-${this.uinfo.id}`).forEach((e) => {
-        e.querySelector("img").src = PLACEHOLDER;
-      });
-    };
+        const img = div.querySelector(`#im-post-icon-${index}`);
+        img.onerror = () => {
+            img.onerror = null;
+            img.src = PLACEHOLDER;
+            this.uinfo.icon = img.src;
+            // replace all pre-existing posts by the user with the placeholder
+            document
+                .querySelectorAll(`.im-post-u-${this.uinfo.id}`)
+                .forEach((e) => {
+                    e.querySelector("img").src = PLACEHOLDER;
+                });
+        };
 
-    return div;
-  }
+        return div;
+    }
 }
 
 class UserInfo {
-  constructor() {
-    this.user = "Deleted User";
-    this.id = "";
-    /** @type {URL?} */
-    this.ulink = null;
-    this.mood = "Unknown mood";
-    this.icon = "";
-  }
+    constructor() {
+        this.user = "Deleted User";
+        this.id = "";
+        /** @type {URL?} */
+        this.ulink = null;
+        this.mood = "Unknown mood";
+        this.icon = "";
+    }
 }
 
 /**
@@ -137,92 +150,92 @@ class UserInfo {
  * @param {string} content
  */
 function format(content) {
-  let match;
-  // headers
-  const m_h = /^(?:<.+>)?(#{1,6}) (.+)$/gm;
-  match = m_h.exec(content);
-  while (match !== null) {
-    const headerNum = match[1].length;
-    content =
-      content.substring(0, match.index) +
-      `<h${headerNum} class="im-post-header">${match[2]}</h${headerNum}>` +
-      content.substring(match.index + match[0].length);
+    let match;
+    // headers
+    const m_h = /^(?:<.+>)?(#{1,6}) (.+)$/gm;
     match = m_h.exec(content);
-  }
-  // bold
-  content = content.replace(/\*\*([^\n]+)\*\*/g, "<b>$1</b>");
-  // italics
-  content = content.replace(/\*(.*?)((?<!\\)|(?<=\\\\))\*/g, "<i>$1</i>");
-  // code
-  // content = content.replace(/```\n<br>([^`]*)<br>```/gs, "<pre>$1</pre>"); // TODO: god almighty
-  content = content.replace(
-    /`((?!\\)[^\n]+)(?<!\\)`/g,
-    '<pre style="display:inline;">$1</pre>'
-  );
-  // links (TODO: no escaped characters support right now for obvious reasons)
-  content = content.replaceAll(/<a[^>]*>([^>]*)<\/a>/g, "$1"); // strip auto generated links
-  const m_l = /(!?)\[([^\[]+)\]\(([^\(]+)\)/g;
-  match = m_l.exec(content);
-  while (match !== null) {
-    if (match[1] === "!") {
-      content =
-        content.substring(0, match.index) +
-        `<img src="${match[3]}" alt="${match[2]}" class="im-post-image">` +
-        content.substring(match.index + match[0].length);
-    } else {
-      content =
-        content.substring(0, match.index) +
-        `<a rel="nofollow" target="_blank" href="${match[3]}" class="im-post-image">${match[2]}</a>` +
-        content.substring(match.index + match[0].length);
+    while (match !== null) {
+        const headerNum = match[1].length;
+        content =
+            content.substring(0, match.index) +
+            `<h${headerNum} class="im-post-header">${match[2]}</h${headerNum}>` +
+            content.substring(match.index + match[0].length);
+        match = m_h.exec(content);
     }
+    // bold
+    content = content.replace(/\*\*([^\n]+)\*\*/g, "<b>$1</b>");
+    // italics
+    content = content.replace(/\*(.*?)((?<!\\)|(?<=\\\\))\*/g, "<i>$1</i>");
+    // code
+    // content = content.replace(/```\n<br>([^`]*)<br>```/gs, "<pre>$1</pre>"); // TODO: god almighty
+    content = content.replace(
+        /`((?!\\)[^\n]+)(?<!\\)`/g,
+        '<pre style="display:inline;">$1</pre>'
+    );
+    // links (TODO: no escaped characters support right now for obvious reasons)
+    content = content.replaceAll(/<a[^>]*>([^>]*)<\/a>/g, "$1"); // strip auto generated links
+    const m_l = /(!?)\[([^\[]+)\]\(([^\(]+)\)/g;
     match = m_l.exec(content);
-  }
-  // escaped characters
-  content = content.replace(/\\(.)/g, "$1");
-  return content;
+    while (match !== null) {
+        if (match[1] === "!") {
+            content =
+                content.substring(0, match.index) +
+                `<img src="${match[3]}" alt="${match[2]}" class="im-post-image">` +
+                content.substring(match.index + match[0].length);
+        } else {
+            content =
+                content.substring(0, match.index) +
+                `<a rel="nofollow" target="_blank" href="${match[3]}" class="im-post-link">${match[2]}</a>` +
+                content.substring(match.index + match[0].length);
+        }
+        match = m_l.exec(content);
+    }
+    // escaped characters
+    content = content.replace(/\\(.)/g, "$1");
+    return content;
 }
 
 (async function () {
-  if (
-    window.location.pathname.slice(window.location.pathname.length - 3) ===
-    "new"
-  )
-    return;
-  const thread = document.querySelectorAll("tbody tr");
-  const posts = [];
+    if (
+        window.location.pathname.slice(window.location.pathname.length - 3) ===
+        "new"
+    )
+        return;
+    const thread = document.querySelectorAll("tbody tr");
+    const posts = [];
 
-  // make post
-  thread.forEach((post) => {
-    const children = post.childNodes;
-    posts.push(new Post(children[1], children[3], children[5]));
-  });
-  // change page content now
-  document.querySelector(".content > h1").innerHTML +=
-    " &raquo; " + posts[0].title;
-  const div = document.createElement("div");
-  div.id = "im-posts-container";
-  posts.forEach((post, index) => {
-    div.appendChild(post.render(index));
-  });
-  document.querySelector(".content > table").outerHTML = div.outerHTML;
+    // make post
+    thread.forEach((post) => {
+        const children = post.childNodes;
+        posts.push(new Post(children[1], children[3], children[5]));
+    });
+    // change page content now
+    document.querySelector(".content > h1").innerHTML +=
+        " &raquo; " + posts[0].title;
+    const div = document.createElement("div");
+    div.id = "im-posts-container";
+    posts.forEach((post, index) => {
+        div.appendChild(post.render(index));
+    });
+    document.querySelector(".content > table").outerHTML = div.outerHTML;
 
-  // now get their moods
-  let idx = 0;
-  for (let post of posts) {
-    if (post.user === "") {
-      idx++;
-      continue;
+    // now get their moods
+    let idx = 0;
+    for (let post of posts) {
+        if (post.user === "") {
+            idx++;
+            continue;
+        }
+        await post.getServerUserInfo(post.userLink);
+        document.getElementById("im-post-" + idx).outerHTML =
+            post.render(idx).outerHTML;
+        idx++;
     }
-    await post.getServerUserInfo(post.userLink);
-    document.getElementById("im-post-" + idx).outerHTML =
-      post.render(idx).outerHTML;
-    idx++;
-  }
 
-  // add info to the bottom of the page
-  const info = document.createElement("p");
-  info.className = "im-forum-response-appendix";
-  info.innerHTML = `<strong>Markdown syntax</strong><br>
+    // add info to the bottom of the page
+    const info = document.createElement("p");
+    info.className = "im-forum-response-appendix";
+    info.innerHTML = `<strong>Markdown syntax</strong><br>
 <table class="im-fra-markdown"><tbody>
   <tr>
     <td># header 1<br>## header 2<br>...<br>###### header 6</td><td><h1 class="im-post-header">header 1</h1><h2 class="im-post-header">header 2</h2><br>...<br><h6 class="im-post-header">header 6</h6></td>
@@ -243,15 +256,15 @@ function format(content) {
     <td>![image](https://images.imood.com/faces/upsidedown.gif)</td><td><img src="https://images.imood.com/faces/upsidedown.gif" alt="image" class="im-post-image"></td>
   </tr>
 </tbody></table>`;
-  document
-    .querySelector(".content")
-    .insertBefore(info, document.querySelector("p.disclaimer"));
+    document
+        .querySelector(".content")
+        .insertBefore(info, document.querySelector("p.disclaimer"));
 
-  // scroll to the newest post
-  const latest = document.querySelector(".im-post-unread");
-  if (latest)
-    latest.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    // scroll to the newest post
+    const latest = document.querySelector(".im-post-unread");
+    if (latest)
+        latest.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
 })();
